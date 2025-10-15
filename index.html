@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blue Protocol Checklist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+            color: #e0e0e0;
+            overflow: hidden; /* Evita scroll na tela de entrada */
+        }
+        
+        /* --- Tela de Entrada --- */
+        .welcome-screen {
+            background-image: url('https://www.bandainamcostudios.com/en/wp-content/uploads/sites/2/2023/06/001.png');
+            background-size: cover;
+            background-position: center;
+            transition: opacity 0.7s ease-out, visibility 0.7s;
+        }
+        .welcome-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .welcome-content {
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        /* --- Conteúdo Principal --- */
+        #main-content {
+             height: 100vh;
+             overflow-y: auto;
+        }
+
+        /* --- Abas de Navegação --- */
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #a0aec0;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active-tab {
+            color: #ffffff;
+            border-bottom-color: #3b82f6;
+        }
+
+        .checklist-card, .class-card {
+             background-color: rgba(22, 26, 44, 0.7);
+             border: 1px solid rgba(255, 255, 255, 0.1);
+             backdrop-filter: blur(5px);
+             -webkit-backdrop-filter: blur(5px);
+        }
+        .task-item {
+            transition: background-color 0.2s, border-color 0.3s, box-shadow 0.3s;
+        }
+        .task-item:hover {
+            background-color: rgba(42, 48, 71, 0.8);
+        }
+        .progress-bar-bg {
+            background-color: rgba(10, 14, 26, 0.8);
+        }
+        .progress-bar-fill {
+            transition: width 0.4s ease-in-out;
+        }
+        #daily-progress, #weekly-progress {
+            background: linear-gradient(90deg, #ef4444, #eab308, #22c55e);
+        }
+
+        /* Efeito de tarefa concluída */
+        .task-completed {
+            border-color: rgba(236, 72, 153, 0.4);
+            box-shadow: 0 0 8px 1px rgba(236, 72, 153, 0.25);
+        }
+        .task-completed span {
+            text-decoration: line-through;
+            color: #8892b0;
+        }
+
+        /* --- Checkbox Customizada --- */
+        .custom-checkbox {
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: transparent;
+            width: 1.5em;
+            height: 1.5em;
+            border: 2px solid #5a678c;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .custom-checkbox:checked {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
+        .custom-checkbox:after {
+            content: '';
+            position: absolute;
+            left: 0.45em;
+            top: 0.2em;
+            width: 0.35em;
+            height: 0.7em;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            transform: rotate(45deg) scale(0);
+            transition: transform 0.2s ease-in-out;
+        }
+        .custom-checkbox:checked:after {
+            transform: rotate(45deg) scale(1);
+        }
+
+        /* --- Página de Guias --- */
+        .class-card {
+            text-align: center;
+            border-radius: 0.75rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            animation: cardFadeIn 0.5s ease-out forwards;
+            overflow: hidden; /* Garante que a imagem respeite a borda arredondada */
+        }
+        .class-card img {
+            transition: transform 0.3s ease;
+        }
+        .class-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+        .class-card:hover img {
+            transform: scale(1.05);
+        }
+        @keyframes cardFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Tela de Entrada -->
+    <div id="welcome-screen" class="welcome-screen h-screen w-screen fixed top-0 left-0 z-20">
+        <div class="welcome-overlay h-full w-full flex flex-col items-center justify-center p-4">
+            <div class="welcome-content text-center">
+                <h1 class="text-4xl md:text-6xl font-bold text-white mb-4" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.7);">Blue Protocol Checklist</h1>
+                <p class="text-lg md:text-xl text-gray-200 mb-8" style="text-shadow: 1px 1px 4px rgba(0,0,0,0.7);">Suas tarefas e guias em um só lugar.</p>
+                <button id="enter-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300 transform hover:scale-105 shadow-lg">
+                    Entrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div id="main-content" class="container mx-auto p-4 md:p-8 opacity-0 transition-opacity duration-500">
+        <header class="text-center mb-6">
+            <h1 class="text-3xl md:text-4xl font-bold text-white">Blue Protocol Hub</h1>
+        </header>
+
+        <!-- Abas de Navegação -->
+        <nav class="flex justify-center mb-8">
+            <button id="tab-checklist" class="tab-btn active-tab">Checklist</button>
+            <button id="tab-guides" class="tab-btn">Guias de Classes</button>
+        </nav>
+        
+        <!-- Conteúdo das Páginas -->
+        <div id="page-content">
+            <!-- Página da Checklist -->
+            <div id="checklist-page">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Checklist Diária -->
+                    <div id="daily-checklist" class="checklist-card p-6 rounded-xl shadow-lg">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-2xl font-semibold">Tarefas Diárias</h2>
+                            <button class="reset-btn bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded-lg transition duration-300" data-type="daily">Resetar</button>
+                        </div>
+                        <div class="w-full progress-bar-bg rounded-full h-4 mb-4">
+                            <div id="daily-progress" class="progress-bar-fill h-4 rounded-full" style="width: 0%"></div>
+                        </div>
+                        <div id="daily-tasks" class="space-y-3"></div>
+                    </div>
+
+                    <!-- Checklist Semanal -->
+                    <div id="weekly-checklist" class="checklist-card p-6 rounded-xl shadow-lg">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-2xl font-semibold">Tarefas Semanais</h2>
+                            <button class="reset-btn bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded-lg transition duration-300" data-type="weekly">Resetar</button>
+                        </div>
+                        <div class="w-full progress-bar-bg rounded-full h-4 mb-4">
+                            <div id="weekly-progress" class="progress-bar-fill h-4 rounded-full" style="width: 0%"></div>
+                        </div>
+                        <div id="weekly-tasks" class="space-y-3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Página dos Guias de Classes -->
+            <div id="guides-page" class="hidden">
+                 <div id="guides-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Cartões das classes serão injetados aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dailyTasksList = [
+                "Event Daily", "Guild Checkin", "Guild cargo", "Unstable Dungeon",
+                "Commission", "Elite Key/ Boss key", "mystery shop", "life skill (400)",
+                "battlepass 500 point", "Expedition (until 1200)", "(Friday) guild dance",
+                "(Weekend) Guild Hunt", "Homestead (RP player, exchange for life skill mat)"
+            ];
+
+            const weeklyTasksList = [
+                "Guild Shop", "Friendship Shop", "Honor shop", "Reputation Shop", "Catch up Shop",
+                "Module From Gear NPC", "Luna bag from Gear NPC", "Pioneer", "9x dragon",
+                "Dungeon (until Refordge Cap)", "SDM", "Season Shop"
+            ];
+            
+            const classesList = [
+                { name: 'Stormblade', slug: 'stormblade', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-stormblafe-550x309.jpeg' },
+                { name: 'Frost Mage', slug: 'frost-mage', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-frost-magfe-550x309.jpeg' },
+                { name: 'Wind Knight', slug: 'wind-knight', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-wind-knight-550x309.jpeg' },
+                { name: 'Verdant Oracle', slug: 'verdant-oracle', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-verdant-oracle-550x309.jpeg' },
+                { name: 'Heavy Guardian', slug: 'heavy-guardian', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-heavy-guardian-550x309.jpeg' },
+                { name: 'Marksman', slug: 'marksman', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-marksman-550x309.jpeg' },
+                { name: 'Shield Knight', slug: 'shield-knight', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-shield-knight-550x309.jpeg' },
+                { name: 'Beat Performer', slug: 'beat-performer', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-beat-performer-550x309.jpeg' }
+            ];
+
+            // Elementos da DOM
+            const dailyTasksContainer = document.getElementById('daily-tasks');
+            const weeklyTasksContainer = document.getElementById('weekly-tasks');
+            const enterButton = document.getElementById('enter-button');
+            const welcomeScreen = document.getElementById('welcome-screen');
+            const mainContent = document.getElementById('main-content');
+            const body = document.body;
+            const tabChecklist = document.getElementById('tab-checklist');
+            const tabGuides = document.getElementById('tab-guides');
+            const checklistPage = document.getElementById('checklist-page');
+            const guidesPage = document.getElementById('guides-page');
+            const guidesContainer = document.getElementById('guides-container');
+
+
+            const triggerConfetti = () => {
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            };
+
+            const updateTaskVisuals = (checkbox) => {
+                const label = checkbox.closest('.task-item');
+                if (label) {
+                    label.classList.toggle('task-completed', checkbox.checked);
+                }
+            };
+            
+            const renderTasks = (tasks, container, type) => {
+                container.innerHTML = '';
+                tasks.forEach((task, index) => {
+                    const taskId = `${type}-${index}`;
+                    const taskElement = document.createElement('label');
+                    taskElement.htmlFor = taskId;
+                    taskElement.className = 'task-item flex items-center bg-[#20253a] p-3 rounded-lg cursor-pointer border border-transparent';
+                    taskElement.innerHTML = `
+                        <input type="checkbox" id="${taskId}" data-type="${type}" class="custom-checkbox mr-4">
+                        <span class="text-gray-200">${task}</span>
+                    `;
+                    container.appendChild(taskElement);
+                });
+            };
+
+            const renderGuides = () => {
+                const baseUrl = 'https://maxroll.gg/blue-protocol/build-guides?filter[classes][taxonomy]=taxonomies.classes&filter[classes][value]=';
+                classesList.forEach((cls, index) => {
+                    const card = document.createElement('a');
+                    card.href = baseUrl + cls.slug;
+                    card.target = '_blank';
+                    card.rel = 'noopener noreferrer';
+                    card.className = 'class-card block';
+                    card.style.animationDelay = `${index * 100}ms`;
+                    card.innerHTML = `
+                        <img src="${cls.image}" alt="Imagem da classe ${cls.name}" class="w-full h-36 object-cover">
+                        <div class="p-4">
+                            <h3 class="text-xl font-bold text-white mb-2">${cls.name}</h3>
+                            <p class="text-blue-400 font-semibold">Ver Guia &rarr;</p>
+                        </div>
+                    `;
+                    guidesContainer.appendChild(card);
+                });
+            }
+
+            const updateProgress = (type) => {
+                const tasks = document.querySelectorAll(`input[data-type="${type}"]`);
+                const checkedTasks = document.querySelectorAll(`input[data-type="${type}"]:checked`);
+                const progress = tasks.length > 0 ? (checkedTasks.length / tasks.length) * 100 : 0;
+                const progressBar = document.getElementById(`${type}-progress`);
+                progressBar.style.width = `${progress}%`;
+                return progress;
+            };
+
+            const saveState = () => {
+                const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                const state = {};
+                checkboxes.forEach(checkbox => { state[checkbox.id] = checkbox.checked; });
+                localStorage.setItem('blueProtocolChecklist', JSON.stringify(state));
+            };
+
+            const loadState = () => {
+                const state = JSON.parse(localStorage.getItem('blueProtocolChecklist'));
+                if (state) {
+                    Object.keys(state).forEach(id => {
+                        const checkbox = document.getElementById(id);
+                        if (checkbox) {
+                            checkbox.checked = state[id];
+                            updateTaskVisuals(checkbox);
+                        }
+                    });
+                }
+            };
+            
+            const setupEventListeners = () => {
+                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.addEventListener('change', () => {
+                        updateTaskVisuals(checkbox);
+                        const type = checkbox.dataset.type;
+                        const progress = updateProgress(type);
+                        saveState();
+                        if (progress === 100) { triggerConfetti(); }
+                    });
+                });
+                
+                document.querySelectorAll('.reset-btn').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const type = button.dataset.type;
+                        document.querySelectorAll(`input[data-type="${type}"]`).forEach(checkbox => {
+                           checkbox.checked = false;
+                           updateTaskVisuals(checkbox);
+                        });
+                        updateProgress(type);
+                        saveState();
+                    });
+                });
+
+                 enterButton.addEventListener('click', () => {
+                    welcomeScreen.style.opacity = '0';
+                    welcomeScreen.style.visibility = 'hidden';
+                    body.style.overflow = 'auto';
+                    mainContent.style.opacity = '1';
+                });
+
+                tabChecklist.addEventListener('click', () => {
+                    checklistPage.classList.remove('hidden');
+                    guidesPage.classList.add('hidden');
+                    tabChecklist.classList.add('active-tab');
+                    tabGuides.classList.remove('active-tab');
+                });
+
+                tabGuides.addEventListener('click', () => {
+                    guidesPage.classList.remove('hidden');
+                    checklistPage.classList.add('hidden');
+                    tabGuides.classList.add('active-tab');
+                    tabChecklist.classList.remove('active-tab');
+                });
+            }
+
+            const init = () => {
+                renderTasks(dailyTasksList, dailyTasksContainer, 'daily');
+                renderTasks(weeklyTasksList, weeklyTasksContainer, 'weekly');
+                renderGuides();
+                loadState();
+                updateProgress('daily');
+                updateProgress('weekly');
+                setupEventListeners();
+            };
+
+            init();
+        });
+    </script>
+</body>
+</html>
+
