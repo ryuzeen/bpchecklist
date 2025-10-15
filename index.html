@@ -36,8 +36,60 @@
             animation: fadeIn 1s ease-out forwards;
         }
 
+        /* --- Header --- */
+        #app-header {
+            background-color: rgba(15, 12, 41, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        /* --- Menu Hambúrguer --- */
+        .hamburger-line {
+            display: block;
+            width: 2rem;
+            height: 3px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            transition: all 0.3s ease-in-out;
+            margin: 5px 0;
+        }
+        #hamburger-btn.open .hamburger-line:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+        #hamburger-btn.open .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+        #hamburger-btn.open .hamburger-line:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+        #mobile-menu {
+            transform: translateX(100%);
+        }
+        #mobile-menu.open {
+            transform: translateX(0);
+        }
+        .menu-tab-btn {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #a0aec0;
+            padding: 1rem 2rem;
+            transition: color 0.3s, background-color 0.3s;
+            width: 100%;
+            text-align: center;
+        }
+        .menu-tab-btn:hover {
+            background-color: rgba(192, 132, 252, 0.1);
+        }
+        .menu-tab-btn.active-tab {
+            color: #c084fc;
+        }
+
+
         /* --- Conteúdo Principal e Layout --- */
         #main-content {
+             padding-top: 100px; /* Espaço para o header fixo de 80px + margem */
              min-height: 100vh;
              display: flex;
              flex-direction: column;
@@ -46,21 +98,7 @@
         #page-content {
             flex-grow: 1;
         }
-
-        /* --- Abas de Navegação --- */
-        .tab-btn {
-            padding: 0.75rem 1.5rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #a0aec0;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s ease;
-        }
-        .tab-btn.active-tab {
-            color: #ffffff;
-            border-bottom-color: #c084fc;
-        }
-
+        
         .checklist-card {
              background-color: rgba(10, 5, 40, 0.5);
              border: 1px solid rgba(192, 132, 252, 0.2);
@@ -97,7 +135,6 @@
             background: linear-gradient(90deg, #ef4444, #eab308, #22c55e);
         }
 
-        /* Efeito de tarefa concluída */
         .task-completed {
             border-color: rgba(217, 70, 239, 0.5);
             background-color: rgba(48, 43, 99, 0.2);
@@ -108,7 +145,6 @@
             color: #a0aec0;
         }
 
-        /* --- Checkbox Customizada --- */
         .custom-checkbox {
             -webkit-appearance: none;
             appearance: none;
@@ -141,7 +177,6 @@
             transform: rotate(45deg) scale(1);
         }
 
-        /* --- Página de Guias --- */
         .class-card {
             background-color: rgba(10, 5, 40, 0.5);
             border: 1px solid rgba(192, 132, 252, 0.2);
@@ -166,7 +201,102 @@
             transform: scale(1.05);
         }
         
-        /* --- Animações --- */
+        #class-modal {
+            transition: opacity 0.4s ease-in-out;
+            --class-color: #c084fc; /* Cor padrão */
+        }
+        #modal-bg-video {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+            transform: translateX(-50%) translateY(-50%);
+            background-size: cover;
+        }
+        #close-modal-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background-color: rgba(0,0,0,0.5);
+            border-radius: 9999px;
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+        #close-modal-btn:hover {
+            background-color: rgba(0,0,0,0.8);
+        }
+        
+        .tech-border {
+            position: relative;
+            padding: 4px;
+            border-radius: 0.75rem;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+        .tech-border::before, .tech-border::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            border-style: solid;
+            border-color: var(--class-color);
+            transition: all 0.3s ease;
+        }
+        .tech-border::before {
+            top: -4px; left: -4px;
+            border-width: 3px 0 0 3px;
+        }
+        .tech-border::after {
+            bottom: -4px; right: -4px;
+            border-width: 0 3px 3px 0;
+        }
+        
+        #modal-skill-video {
+            max-width: 50vw;
+            width: 100%;
+            border-radius: 0.5rem;
+        }
+
+        .tech-btn {
+            position: relative;
+            padding: 1rem 2rem;
+            background-color: rgba(10, 5, 40, 0.8);
+            color: white;
+            border: 2px solid var(--class-color);
+            border-radius: 0.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            overflow: hidden;
+            transition: color 0.4s ease-in-out, background-color 0.4s ease-in-out;
+            box-shadow: 0 0 10px var(--class-color);
+            animation: pulse-glow 3s infinite ease-in-out;
+        }
+        .tech-btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--class-color), transparent);
+            transition: left 0.4s ease-in-out;
+        }
+        .tech-btn:hover {
+            color: #111;
+            background-color: rgba(10, 5, 40, 1);
+        }
+        .tech-btn:hover:before {
+            left: 100%;
+        }
+
         @keyframes cardFadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -177,15 +307,43 @@
                 opacity: 1;
             }
         }
-
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 5px var(--class-color); }
+            50% { box-shadow: 0 0 20px var(--class-color); }
+            100% { box-shadow: 0 0 5px var(--class-color); }
+        }
     </style>
 </head>
 <body class="antialiased">
 
+    <!-- Header -->
+    <header id="app-header" class="hidden fixed top-0 left-0 w-full z-40">
+        <div class="container mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
+            <a href="https://www.playbpsr.com/" target="_blank" rel="noopener noreferrer">
+                <img src="https://styles.redditmedia.com/t5_hzx5s/styles/communityIcon_5xrxv8eu65r81.jpg?width=128&frame=1&auto=webp&s=7b9cc84a4abdb61f7720fab64d510732ac46f9e5" alt="Blue Protocol Logo" class="rounded-full h-12 w-12">
+            </a>
+            <button id="hamburger-btn" class="z-50 p-2">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Menu Lateral -->
+    <div id="mobile-menu" class="fixed top-0 right-0 h-full w-full max-w-xs bg-gray-900/90 backdrop-blur-lg z-50 transition-transform duration-300 ease-in-out">
+        <nav class="mt-24 flex flex-col">
+            <button id="menu-btn-checklist" class="menu-tab-btn">Checklist</button>
+            <button id="menu-btn-guides" class="menu-tab-btn">Build Guides</button>
+        </nav>
+    </div>
+
+
     <!-- Tela de Entrada -->
-    <div id="welcome-screen" class="welcome-screen h-screen w-screen fixed top-0 left-0 z-20">
+    <div id="welcome-screen" class="welcome-screen h-screen w-screen fixed top-0 left-0 z-30 flex items-center justify-center">
         <div class="welcome-overlay h-full w-full flex flex-col items-center justify-center p-4">
             <div class="welcome-content text-center">
+                 <img src="https://styles.redditmedia.com/t5_hzx5s/styles/communityIcon_5xrxv8eu65r81.jpg?width=128&frame=1&auto=webp&s=7b9cc84a4abdb61f7720fab64d510732ac46f9e5" alt="Blue Protocol Logo" class="rounded-full h-32 w-32 mx-auto mb-8">
                 <h1 class="text-4xl md:text-6xl font-bold text-white mb-4" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.7);">Blue Protocol Checklist</h1>
                 <p class="text-lg md:text-xl text-gray-200 mb-8" style="text-shadow: 1px 1px 4px rgba(0,0,0,0.7);">Suas tarefas e guias em um só lugar.</p>
                 <button id="enter-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300 transform hover:scale-105 shadow-lg">
@@ -196,23 +354,12 @@
     </div>
 
     <!-- Conteúdo Principal -->
-    <div id="main-content" class="container mx-auto p-4 md:p-8 opacity-0 transition-opacity duration-500">
-        <header class="text-center mb-6">
-            <h1 class="text-3xl md:text-4xl font-bold text-white">Blue Protocol Hub</h1>
-        </header>
-
-        <!-- Abas de Navegação -->
-        <nav class="flex justify-center mb-8">
-            <button id="tab-checklist" class="tab-btn active-tab">Checklist</button>
-            <button id="tab-guides" class="tab-btn">Guias de Classes</button>
-        </nav>
-        
+    <div id="main-content" class="container mx-auto px-4 md:px-8 opacity-0 transition-opacity duration-500">
         <!-- Conteúdo das Páginas -->
         <div id="page-content">
             <!-- Página da Checklist -->
             <div id="checklist-page">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Checklist Diária -->
                     <div id="daily-checklist" class="checklist-card p-6 rounded-xl shadow-lg">
                         <div class="flex justify-between items-baseline mb-4">
                             <div class="flex items-baseline gap-3">
@@ -226,8 +373,6 @@
                         </div>
                         <div id="daily-tasks" class="space-y-3"></div>
                     </div>
-
-                    <!-- Checklist Semanal -->
                     <div id="weekly-checklist" class="checklist-card p-6 rounded-xl shadow-lg">
                         <div class="flex justify-between items-baseline mb-4">
                             <div class="flex items-baseline gap-3">
@@ -243,40 +388,42 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Página dos Guias de Classes -->
+            <!-- Página dos Guias -->
             <div id="guides-page" class="hidden">
-                 <div id="guides-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Cartões das classes serão injetados aqui -->
-                </div>
+                 <div id="guides-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
             </div>
         </div>
     </div>
 
+    <!-- Modal de Classe -->
+    <div id="class-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-40 flex items-center justify-start p-8 md:p-16">
+        <video id="modal-bg-video" autoplay loop muted playsinline></video>
+        <div class="flex flex-col items-start gap-8 ml-8">
+            <div class="tech-border">
+                <video id="modal-skill-video" controls autoplay loop muted></video>
+            </div>
+             <a id="guide-link" href="#" target="_blank" rel="noopener noreferrer" class="tech-btn">
+                Ver Guia Completo
+            </a>
+        </div>
+        <button id="close-modal-btn" title="Fechar">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const dailyTasksList = [
-                "Event Daily", "Guild Checkin", "Guild cargo", "Unstable Dungeon",
-                "Commission", "Elite Key/ Boss key", "mystery shop", "life skill (400)",
-                "battlepass 500 point", "Expedition (until 1200)", "(Friday) guild dance",
-                "(Weekend) Guild Hunt", "Homestead (RP player, exchange for life skill mat)"
-            ];
-
-            const weeklyTasksList = [
-                "Guild Shop", "Friendship Shop", "Honor shop", "Reputation Shop", "Catch up Shop",
-                "Module From Gear NPC", "Luna bag from Gear NPC", "Pioneer", "9x dragon",
-                "Dungeon (until Refordge Cap)", "SDM", "Season Shop"
-            ];
-            
+            const dailyTasksList = ["Event Daily", "Guild Checkin", "Guild cargo", "Unstable Dungeon", "Commission", "Elite Key/ Boss key", "mystery shop", "life skill (400)", "battlepass 500 point", "Expedition (until 1200)", "(Friday) guild dance", "(Weekend) Guild Hunt", "Homestead (RP player, exchange for life skill mat)"];
+            const weeklyTasksList = ["Guild Shop", "Friendship Shop", "Honor shop", "Reputation Shop", "Catch up Shop", "Module From Gear NPC", "Luna bag from Gear NPC", "Pioneer", "9x dragon", "Dungeon (until Refordge Cap)", "SDM", "Season Shop"];
             const classesList = [
-                { name: 'Stormblade', slug: 'stormblade', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-stormblafe-550x309.jpeg' },
-                { name: 'Frost Mage', slug: 'frost-mage', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-frost-magfe-550x309.jpeg' },
-                { name: 'Wind Knight', slug: 'wind-knight', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-wind-knight-550x309.jpeg' },
-                { name: 'Verdant Oracle', slug: 'verdant-oracle', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-verdant-oracle-550x309.jpeg' },
-                { name: 'Heavy Guardian', slug: 'heavy-guardian', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-heavy-guardian-550x309.jpeg' },
-                { name: 'Marksman', slug: 'marksman', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-marksman-550x309.jpeg' },
-                { name: 'Shield Knight', slug: 'shield-knight', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-shield-knight-550x309.jpeg' },
-                { name: 'Beat Performer', slug: 'beat-performer', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-beat-performer-550x309.jpeg' }
+                { name: 'Stormblade', slug: 'stormblade', color: '#ef4444', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-stormblafe-550x309.jpeg', backgroundVideo: 'https://game-cdn.aplusjapan-game.com/xing_heng/img/new_hero/Stormblade_mp4.mp4', skillVideo: 'https://game-cdn.aplusjapan-game.com/xing_heng/img/skill_video/Stormblade_video_0.mp4' },
+                { name: 'Frost Mage', slug: 'frost-mage', color: '#ec4899', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-frost-magfe-550x309.jpeg', backgroundVideo: 'https://game-cdn.aplusjapan-game.com/xing_heng/img/new_hero/Frost_mp4.mp4', skillVideo: 'https://game-cdn.aplusjapan-game.com/xing_heng/img/skill_video/WindKnight_video_0.mp4' },
+                { name: 'Wind Knight', slug: 'wind-knight', color: '#22d3ee', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-wind-knight-550x309.jpeg', backgroundVideo: 'https://game-cdn.aplusjapan-game.com/xing_heng/img/new_hero/Wind_mp4.mp4', skillVideo: 'https://game-cdn.aplusjapan-game.com/xing_heng/img/skill_video/FrostMage_video_0.mp4' },
+                { name: 'Verdant Oracle', slug: 'verdant-oracle', color: '#4ade80', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-verdant-oracle-550x309.jpeg', backgroundVideo: 'https://game-cdn.aplusjapan-game.com/xing_heng/img/new_hero/Verdant_mp4.mp4', skillVideo: 'https://game-cdn.aplusjapan-game.com/xing_heng/img/skill_video/VerdantOracle_video_0.mp4' },
+                { name: 'Heavy Guardian', slug: 'heavy-guardian', color: '#3b82f6', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-heavy-guardian-550x309.jpeg', backgroundVideo: 'https://game-cdn.aplusjapan-game.com/xing_heng/img/new_hero/Heavy_mp4.mp4', skillVideo: 'https://game-cdn.aplusjapan-game.com/xing_heng/img/skill_video/HeavyGuardian_video_0.mp4' },
+                { name: 'Marksman', slug: 'marksman', color: '#fde047', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-marksman-550x309.jpeg', backgroundVideo: 'https://game-cdn.aplusjapan-game.com/xing_heng/img/new_hero/Marksman_mp4.mp4', skillVideo: 'https://game-cdn.aplusjapan-game.com/xing_heng/img/skill_video/Marksman_video_0.mp4' },
+                { name: 'Shield Knight', slug: 'shield-knight', color: '#f97316', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-shield-knight-550x309.jpeg', backgroundVideo: 'https://game-cdn.aplusjapan-game.com/xing_heng/img/new_hero/Shield_mp4.mp4', skillVideo: 'https://game-cdn.aplusjapan-game.com/xing_heng/img/skill_video/Shield_Knight_video_0.mp4' },
+                { name: 'Beat Performer', slug: 'beat-performer', color: '#a855f7', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-beat-performer-550x309.jpeg', backgroundVideo: 'https://game-cdn.aplusjapan-game.com/xing_heng/img/new_hero/Soul_mp42.mp4', skillVideo: 'https://game-cdn.aplusjapan-game.com/xing_heng/img/skill_video/Soul_video_0.mp4' }
             ];
 
             const dailyTasksContainer = document.getElementById('daily-tasks');
@@ -284,24 +431,22 @@
             const enterButton = document.getElementById('enter-button');
             const welcomeScreen = document.getElementById('welcome-screen');
             const mainContent = document.getElementById('main-content');
-            const body = document.body;
-            const tabChecklist = document.getElementById('tab-checklist');
-            const tabGuides = document.getElementById('tab-guides');
+            const appHeader = document.getElementById('app-header');
             const checklistPage = document.getElementById('checklist-page');
             const guidesPage = document.getElementById('guides-page');
             const guidesContainer = document.getElementById('guides-container');
+            const classModal = document.getElementById('class-modal');
+            const modalBgVideo = document.getElementById('modal-bg-video');
+            const modalSkillVideo = document.getElementById('modal-skill-video');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const guideLink = document.getElementById('guide-link');
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuBtnChecklist = document.getElementById('menu-btn-checklist');
+            const menuBtnGuides = document.getElementById('menu-btn-guides');
 
-
-            const triggerConfetti = () => {
-                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-            };
-
-            const updateTaskVisuals = (checkbox) => {
-                const label = checkbox.closest('.task-item');
-                if (label) {
-                    label.classList.toggle('task-completed', checkbox.checked);
-                }
-            };
+            const triggerConfetti = () => confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            const updateTaskVisuals = (checkbox) => checkbox.closest('.task-item').classList.toggle('task-completed', checkbox.checked);
             
             const renderTasks = (tasks, container, type) => {
                 container.innerHTML = '';
@@ -311,30 +456,19 @@
                     taskElement.htmlFor = taskId;
                     taskElement.className = 'task-item flex items-center p-3 rounded-lg cursor-pointer border border-transparent';
                     taskElement.style.animationDelay = `${index * 50}ms`;
-                    taskElement.innerHTML = `
-                        <input type="checkbox" id="${taskId}" data-type="${type}" class="custom-checkbox mr-4">
-                        <span class="text-gray-200">${task}</span>
-                    `;
+                    taskElement.innerHTML = `<input type="checkbox" id="${taskId}" data-type="${type}" class="custom-checkbox mr-4"> <span class="text-gray-200">${task}</span>`;
                     container.appendChild(taskElement);
                 });
             };
 
             const renderGuides = () => {
-                const baseUrl = 'https://maxroll.gg/blue-protocol/build-guides?filter[classes][taxonomy]=taxonomies.classes&filter[classes][value]=';
+                guidesContainer.innerHTML = '';
                 classesList.forEach((cls, index) => {
-                    const card = document.createElement('a');
-                    card.href = baseUrl + cls.slug;
-                    card.target = '_blank';
-                    card.rel = 'noopener noreferrer';
-                    card.className = 'class-card block';
+                    const card = document.createElement('div');
+                    card.className = 'class-card block cursor-pointer';
                     card.style.animationDelay = `${index * 100}ms`;
-                    card.innerHTML = `
-                        <img src="${cls.image}" alt="Imagem da classe ${cls.name}" class="w-full h-36 object-cover">
-                        <div class="p-4">
-                            <h3 class="text-xl font-bold text-white mb-2">${cls.name}</h3>
-                            <p class="text-blue-400 font-semibold">Ver Guia &rarr;</p>
-                        </div>
-                    `;
+                    card.dataset.index = index;
+                    card.innerHTML = `<img src="${cls.image}" alt="Imagem da classe ${cls.name}" class="w-full h-36 object-cover pointer-events-none"> <div class="p-4 pointer-events-none"><h3 class="text-xl font-bold text-white mb-2">${cls.name}</h3><p class="text-purple-400 font-semibold">Ver Detalhes &rarr;</p></div>`;
                     guidesContainer.appendChild(card);
                 });
             }
@@ -343,22 +477,14 @@
                 const tasks = document.querySelectorAll(`input[data-type="${type}"]`);
                 const checkedTasks = document.querySelectorAll(`input[data-type="${type}"]:checked`);
                 const progress = tasks.length > 0 ? (checkedTasks.length / tasks.length) * 100 : 0;
-                const progressBar = document.getElementById(`${type}-progress`);
-                const counter = document.getElementById(`${type}-counter`);
-                
-                progressBar.style.width = `${progress}%`;
-                
-                if(counter){
-                    counter.textContent = `(${checkedTasks.length}/${tasks.length})`;
-                }
-
+                document.getElementById(`${type}-progress`).style.width = `${progress}%`;
+                document.getElementById(`${type}-counter`).textContent = `(${checkedTasks.length}/${tasks.length})`;
                 return progress;
             };
 
             const saveState = () => {
-                const checkboxes = document.querySelectorAll('input[type="checkbox"]');
                 const state = {};
-                checkboxes.forEach(checkbox => { state[checkbox.id] = checkbox.checked; });
+                document.querySelectorAll('input[type="checkbox"]').forEach(cb => { state[cb.id] = cb.checked; });
                 localStorage.setItem('blueProtocolChecklist', JSON.stringify(state));
             };
 
@@ -375,49 +501,73 @@
                 }
             };
             
+            const openClassModal = (classData) => {
+                classModal.style.setProperty('--class-color', classData.color);
+                modalBgVideo.src = classData.backgroundVideo;
+                modalSkillVideo.src = classData.skillVideo;
+                guideLink.href = `https://maxroll.gg/blue-protocol/build-guides?filter[classes][taxonomy]=taxonomies.classes&filter[classes][value]=${classData.slug}`;
+                classModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+
+            const closeClassModal = () => {
+                classModal.classList.add('hidden');
+                modalBgVideo.src = ''; 
+                modalSkillVideo.src = '';
+                document.body.style.overflow = 'auto';
+            }
+
+            const handleTabSwitch = (activePage) => {
+                checklistPage.classList.toggle('hidden', activePage !== 'checklist');
+                guidesPage.classList.toggle('hidden', activePage !== 'guides');
+                menuBtnChecklist.classList.toggle('active-tab', activePage === 'checklist');
+                menuBtnGuides.classList.toggle('active-tab', activePage === 'guides');
+                hamburgerBtn.classList.remove('open');
+                mobileMenu.classList.remove('open');
+            };
+
             const setupEventListeners = () => {
-                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                    checkbox.addEventListener('change', () => {
-                        updateTaskVisuals(checkbox);
-                        const type = checkbox.dataset.type;
-                        const progress = updateProgress(type);
-                        saveState();
-                        if (progress === 100) { triggerConfetti(); }
+                document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', () => {
+                    updateTaskVisuals(cb);
+                    const type = cb.dataset.type;
+                    const progress = updateProgress(type);
+                    saveState();
+                    if (progress === 100) triggerConfetti();
+                }));
+                
+                document.querySelectorAll('.reset-btn').forEach(btn => btn.addEventListener('click', () => {
+                    const type = btn.dataset.type;
+                    document.querySelectorAll(`input[data-type="${type}"]`).forEach(cb => {
+                       cb.checked = false;
+                       updateTaskVisuals(cb);
                     });
+                    updateProgress(type);
+                    saveState();
+                }));
+
+                enterButton.addEventListener('click', () => {
+                    welcomeScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        welcomeScreen.classList.add('hidden');
+                        appHeader.classList.remove('hidden');
+                        mainContent.classList.remove('opacity-0');
+                    }, 700);
                 });
                 
-                document.querySelectorAll('.reset-btn').forEach(button => {
-                    button.addEventListener('click', () => {
-                        const type = button.dataset.type;
-                        document.querySelectorAll(`input[data-type="${type}"]`).forEach(checkbox => {
-                           checkbox.checked = false;
-                           updateTaskVisuals(checkbox);
-                        });
-                        updateProgress(type);
-                        saveState();
-                    });
+                guidesContainer.addEventListener('click', (e) => {
+                    const card = e.target.closest('.class-card');
+                    if (card) openClassModal(classesList[card.dataset.index]);
                 });
 
-                 enterButton.addEventListener('click', () => {
-                    welcomeScreen.style.opacity = '0';
-                    welcomeScreen.style.visibility = 'hidden';
-                    body.style.overflow = 'auto'; // Re-enable scroll for main content if needed
-                    mainContent.style.opacity = '1';
+                closeModalBtn.addEventListener('click', closeClassModal);
+                classModal.addEventListener('click', (e) => { if (e.target === classModal) closeClassModal(); });
+                
+                hamburgerBtn.addEventListener('click', () => {
+                    hamburgerBtn.classList.toggle('open');
+                    mobileMenu.classList.toggle('open');
                 });
-
-                tabChecklist.addEventListener('click', () => {
-                    checklistPage.classList.remove('hidden');
-                    guidesPage.classList.add('hidden');
-                    tabChecklist.classList.add('active-tab');
-                    tabGuides.classList.remove('active-tab');
-                });
-
-                tabGuides.addEventListener('click', () => {
-                    guidesPage.classList.remove('hidden');
-                    checklistPage.classList.add('hidden');
-                    tabGuides.classList.add('active-tab');
-                    tabChecklist.classList.remove('active-tab');
-                });
+                menuBtnChecklist.addEventListener('click', () => handleTabSwitch('checklist'));
+                menuBtnGuides.addEventListener('click', () => handleTabSwitch('guides'));
             }
 
             const init = () => {
@@ -427,16 +577,8 @@
                 loadState();
                 updateProgress('daily');
                 updateProgress('weekly');
+                handleTabSwitch('checklist');
                 setupEventListeners();
-
-                // Initially hide welcome screen if not first visit (optional)
-                if(localStorage.getItem('visitedBefore')) {
-                    welcomeScreen.style.display = 'none';
-                    body.style.overflow = 'auto';
-                    mainContent.style.opacity = '1';
-                } else {
-                    localStorage.setItem('visitedBefore', 'true');
-                }
             };
 
             init();
