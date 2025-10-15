@@ -39,7 +39,9 @@
 
         /* --- Header --- */
         #app-header {
-            background-color: rgba(15, 12, 41, 0.8);
+            background-image: linear-gradient(rgba(15, 12, 41, 0.7), rgba(15, 12, 41, 0.7)), url('https://styles.redditmedia.com/t5_hzx5s/styles/bannerBackgroundImage_52c3vw9wcs4b1.jpg?format=pjpg&s=9982995aee5508094435e8513744a3ab777d45d2');
+            background-size: cover;
+            background-position: center;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
@@ -276,7 +278,7 @@
             font-weight: bold;
             text-transform: uppercase;
             overflow: hidden;
-            transition: color 0.4s ease-in-out, background-color 0.4s ease-in-out;
+            transition: color 0.4s ease-in-out, background-color 0.4s ease-in-out, box-shadow 0.4s ease;
             box-shadow: 0 0 10px var(--class-color);
             animation: pulse-glow 3s infinite ease-in-out;
         }
@@ -291,8 +293,8 @@
             transition: left 0.4s ease-in-out;
         }
         .tech-btn:hover {
-            color: #111;
             background-color: rgba(10, 5, 40, 1);
+            box-shadow: 0 0 25px var(--class-color);
         }
         .tech-btn:hover:before {
             left: 100%;
