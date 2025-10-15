@@ -295,6 +295,7 @@
         .tech-btn:hover {
             background-color: rgba(10, 5, 40, 1);
             box-shadow: 0 0 25px var(--class-color);
+            color: white; /* Garante que o texto fique branco no hover */
         }
         .tech-btn:hover:before {
             left: 100%;
@@ -315,6 +316,29 @@
             50% { box-shadow: 0 0 20px var(--class-color); }
             100% { box-shadow: 0 0 5px var(--class-color); }
         }
+
+        /* Animações da Notificação */
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 0 rgba(192, 132, 252, 0); }
+            50% { box-shadow: 0 0 20px rgba(192, 132, 252, 0.7); }
+        }
+        .glowing-hamburger {
+            animation: glow 1.5s ease-in-out 2;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+        .animate-fade-out {
+            animation: fadeOut 0.5s ease-out forwards;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -325,7 +349,7 @@
             <a href="https://www.playbpsr.com/" target="_blank" rel="noopener noreferrer">
                 <img src="https://styles.redditmedia.com/t5_hzx5s/styles/communityIcon_5xrxv8eu65r81.jpg?width=128&frame=1&auto=webp&s=7b9cc84a4abdb61f7720fab64d510732ac46f9e5" alt="Blue Protocol Logo" class="rounded-full h-12 w-12">
             </a>
-            <button id="hamburger-btn" class="z-50 p-2">
+            <button id="hamburger-btn" class="z-50 p-2 rounded-md">
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
@@ -353,6 +377,18 @@
                     Entrar
                 </button>
             </div>
+        </div>
+    </div>
+    
+    <!-- Notificação dos Guias -->
+    <div id="guide-notification" class="hidden fixed top-5 right-48 z-50 w-max">
+        <div class="bg-purple-700 text-white text-sm font-semibold px-4 py-3 rounded-lg shadow-xl relative">
+            <span class="pr-6">Não esqueça de conferir os guias!</span>
+            <!-- Seta apontando para a esquerda -->
+            <div class="absolute top-1/2 -right-2 transform -translate-y-1/2 w-4 h-4 bg-purple-700 rotate-45"></div>
+            <button id="close-notification-btn" class="absolute top-1/2 -translate-y-1/2 right-1.5 p-1 text-purple-200 hover:text-white">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+            </button>
         </div>
     </div>
 
@@ -447,6 +483,9 @@
             const mobileMenu = document.getElementById('mobile-menu');
             const menuBtnChecklist = document.getElementById('menu-btn-checklist');
             const menuBtnGuides = document.getElementById('menu-btn-guides');
+            const guideNotification = document.getElementById('guide-notification');
+            const closeNotificationBtn = document.getElementById('close-notification-btn');
+            let notificationTimeout;
 
             const triggerConfetti = () => confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             const updateTaskVisuals = (checkbox) => checkbox.closest('.task-item').classList.toggle('task-completed', checkbox.checked);
@@ -529,6 +568,24 @@
                 mobileMenu.classList.remove('open');
             };
 
+            const hideNotification = () => {
+                if (guideNotification.classList.contains('hidden')) return;
+                guideNotification.classList.remove('animate-fade-in-up');
+                guideNotification.classList.add('animate-fade-out');
+                hamburgerBtn.classList.remove('glowing-hamburger');
+                setTimeout(() => {
+                    guideNotification.classList.add('hidden');
+                }, 500); // Duração da animação
+                clearTimeout(notificationTimeout);
+            };
+
+            const showNotification = () => {
+                guideNotification.classList.remove('hidden', 'animate-fade-out');
+                guideNotification.classList.add('animate-fade-in-up');
+                hamburgerBtn.classList.add('glowing-hamburger');
+                notificationTimeout = setTimeout(hideNotification, 3000);
+            };
+
             const setupEventListeners = () => {
                 document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', () => {
                     updateTaskVisuals(cb);
@@ -554,6 +611,7 @@
                         welcomeScreen.classList.add('hidden');
                         appHeader.classList.remove('hidden');
                         mainContent.classList.remove('opacity-0');
+                        showNotification();
                     }, 700);
                 });
                 
@@ -571,6 +629,7 @@
                 });
                 menuBtnChecklist.addEventListener('click', () => handleTabSwitch('checklist'));
                 menuBtnGuides.addEventListener('click', () => handleTabSwitch('guides'));
+                closeNotificationBtn.addEventListener('click', hideNotification);
             }
 
             const init = () => {
