@@ -12,9 +12,8 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+            background: linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             color: #e0e0e0;
-            overflow: hidden; /* Evita scroll na tela de entrada */
         }
         
         /* --- Tela de Entrada --- */
@@ -37,10 +36,15 @@
             animation: fadeIn 1s ease-out forwards;
         }
 
-        /* --- Conteúdo Principal --- */
+        /* --- Conteúdo Principal e Layout --- */
         #main-content {
-             height: 100vh;
-             overflow-y: auto;
+             min-height: 100vh;
+             display: flex;
+             flex-direction: column;
+        }
+        
+        #page-content {
+            flex-grow: 1;
         }
 
         /* --- Abas de Navegação --- */
@@ -54,20 +58,34 @@
         }
         .tab-btn.active-tab {
             color: #ffffff;
-            border-bottom-color: #3b82f6;
+            border-bottom-color: #c084fc;
         }
 
-        .checklist-card, .class-card {
-             background-color: rgba(22, 26, 44, 0.7);
-             border: 1px solid rgba(255, 255, 255, 0.1);
-             backdrop-filter: blur(5px);
-             -webkit-backdrop-filter: blur(5px);
+        .checklist-card {
+             background-color: rgba(10, 5, 40, 0.5);
+             border: 1px solid rgba(192, 132, 252, 0.2);
+             backdrop-filter: blur(10px);
+             -webkit-backdrop-filter: blur(10px);
+             transition: all 0.3s ease;
+             animation: cardFadeIn 0.5s ease-out forwards;
         }
+        .checklist-card:hover {
+            box-shadow: 0 0 20px rgba(192, 132, 252, 0.15);
+            border-color: rgba(192, 132, 252, 0.4);
+        }
+
         .task-item {
-            transition: background-color 0.2s, border-color 0.3s, box-shadow 0.3s;
+            background-color: rgba(48, 43, 99, 0.4);
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+            transform: translateX(-100%);
+            opacity: 0;
+            animation: slideIn 0.4s ease-out forwards;
         }
         .task-item:hover {
-            background-color: rgba(42, 48, 71, 0.8);
+            background-color: rgba(48, 43, 99, 0.8);
+            border-color: rgba(192, 132, 252, 0.3);
+            transform: scale(1.02) translateX(0); /* Mantém a posição no hover */
         }
         .progress-bar-bg {
             background-color: rgba(10, 14, 26, 0.8);
@@ -81,12 +99,13 @@
 
         /* Efeito de tarefa concluída */
         .task-completed {
-            border-color: rgba(236, 72, 153, 0.4);
-            box-shadow: 0 0 8px 1px rgba(236, 72, 153, 0.25);
+            border-color: rgba(217, 70, 239, 0.5);
+            background-color: rgba(48, 43, 99, 0.2);
+            box-shadow: 0 0 10px 2px rgba(217, 70, 239, 0.2);
         }
         .task-completed span {
             text-decoration: line-through;
-            color: #8892b0;
+            color: #a0aec0;
         }
 
         /* --- Checkbox Customizada --- */
@@ -103,8 +122,8 @@
             transition: all 0.2s ease;
         }
         .custom-checkbox:checked {
-            background: #3b82f6;
-            border-color: #3b82f6;
+            background: #a855f7;
+            border-color: #a855f7;
         }
         .custom-checkbox:after {
             content: '';
@@ -124,12 +143,16 @@
 
         /* --- Página de Guias --- */
         .class-card {
+            background-color: rgba(10, 5, 40, 0.5);
+            border: 1px solid rgba(192, 132, 252, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             text-align: center;
             border-radius: 0.75rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
             opacity: 0;
             animation: cardFadeIn 0.5s ease-out forwards;
-            overflow: hidden; /* Garante que a imagem respeite a borda arredondada */
+            overflow: hidden;
         }
         .class-card img {
             transition: transform 0.3s ease;
@@ -137,14 +160,22 @@
         .class-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-            border-color: rgba(59, 130, 246, 0.5);
+            border-color: rgba(192, 132, 252, 0.5);
         }
         .class-card:hover img {
             transform: scale(1.05);
         }
+        
+        /* --- Animações --- */
         @keyframes cardFadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideIn {
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
     </style>
@@ -183,9 +214,12 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <!-- Checklist Diária -->
                     <div id="daily-checklist" class="checklist-card p-6 rounded-xl shadow-lg">
-                        <div class="flex justify-between items-center mb-4">
-                            <h2 class="text-2xl font-semibold">Tarefas Diárias</h2>
-                            <button class="reset-btn bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded-lg transition duration-300" data-type="daily">Resetar</button>
+                        <div class="flex justify-between items-baseline mb-4">
+                            <div class="flex items-baseline gap-3">
+                                <h2 class="text-2xl font-semibold">Tarefas Diárias</h2>
+                                <span id="daily-counter" class="font-medium text-gray-400"></span>
+                            </div>
+                            <button class="reset-btn bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold py-2 px-4 rounded-lg transition duration-300" data-type="daily">Resetar</button>
                         </div>
                         <div class="w-full progress-bar-bg rounded-full h-4 mb-4">
                             <div id="daily-progress" class="progress-bar-fill h-4 rounded-full" style="width: 0%"></div>
@@ -195,9 +229,12 @@
 
                     <!-- Checklist Semanal -->
                     <div id="weekly-checklist" class="checklist-card p-6 rounded-xl shadow-lg">
-                        <div class="flex justify-between items-center mb-4">
-                            <h2 class="text-2xl font-semibold">Tarefas Semanais</h2>
-                            <button class="reset-btn bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded-lg transition duration-300" data-type="weekly">Resetar</button>
+                        <div class="flex justify-between items-baseline mb-4">
+                            <div class="flex items-baseline gap-3">
+                                <h2 class="text-2xl font-semibold">Tarefas Semanais</h2>
+                                <span id="weekly-counter" class="font-medium text-gray-400"></span>
+                            </div>
+                            <button class="reset-btn bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold py-2 px-4 rounded-lg transition duration-300" data-type="weekly">Resetar</button>
                         </div>
                         <div class="w-full progress-bar-bg rounded-full h-4 mb-4">
                             <div id="weekly-progress" class="progress-bar-fill h-4 rounded-full" style="width: 0%"></div>
@@ -242,7 +279,6 @@
                 { name: 'Beat Performer', slug: 'beat-performer', image: 'https://www.pockettactics.com/wp-content/sites/pockettactics/2025/10/blue-protocol-star-resonance-classes-beat-performer-550x309.jpeg' }
             ];
 
-            // Elementos da DOM
             const dailyTasksContainer = document.getElementById('daily-tasks');
             const weeklyTasksContainer = document.getElementById('weekly-tasks');
             const enterButton = document.getElementById('enter-button');
@@ -273,7 +309,8 @@
                     const taskId = `${type}-${index}`;
                     const taskElement = document.createElement('label');
                     taskElement.htmlFor = taskId;
-                    taskElement.className = 'task-item flex items-center bg-[#20253a] p-3 rounded-lg cursor-pointer border border-transparent';
+                    taskElement.className = 'task-item flex items-center p-3 rounded-lg cursor-pointer border border-transparent';
+                    taskElement.style.animationDelay = `${index * 50}ms`;
                     taskElement.innerHTML = `
                         <input type="checkbox" id="${taskId}" data-type="${type}" class="custom-checkbox mr-4">
                         <span class="text-gray-200">${task}</span>
@@ -307,7 +344,14 @@
                 const checkedTasks = document.querySelectorAll(`input[data-type="${type}"]:checked`);
                 const progress = tasks.length > 0 ? (checkedTasks.length / tasks.length) * 100 : 0;
                 const progressBar = document.getElementById(`${type}-progress`);
+                const counter = document.getElementById(`${type}-counter`);
+                
                 progressBar.style.width = `${progress}%`;
+                
+                if(counter){
+                    counter.textContent = `(${checkedTasks.length}/${tasks.length})`;
+                }
+
                 return progress;
             };
 
@@ -357,7 +401,7 @@
                  enterButton.addEventListener('click', () => {
                     welcomeScreen.style.opacity = '0';
                     welcomeScreen.style.visibility = 'hidden';
-                    body.style.overflow = 'auto';
+                    body.style.overflow = 'auto'; // Re-enable scroll for main content if needed
                     mainContent.style.opacity = '1';
                 });
 
@@ -384,6 +428,15 @@
                 updateProgress('daily');
                 updateProgress('weekly');
                 setupEventListeners();
+
+                // Initially hide welcome screen if not first visit (optional)
+                if(localStorage.getItem('visitedBefore')) {
+                    welcomeScreen.style.display = 'none';
+                    body.style.overflow = 'auto';
+                    mainContent.style.opacity = '1';
+                } else {
+                    localStorage.setItem('visitedBefore', 'true');
+                }
             };
 
             init();
